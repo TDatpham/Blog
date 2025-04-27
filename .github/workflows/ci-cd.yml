@@ -59,16 +59,31 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H $VPS_HOST >> ~/.ssh/known_hosts
 
-      - name: Deploy to VPS
+      - name: Deploy and Restart App
         env:
           VPS_HOST: 160.250.134.209
           VPS_USER: root
           APP_PATH: /root/apps/blog
+          SERVICE_NAME: blog-app
         run: |
           JAR_FILE=$(ls *.jar)
           echo "Jar file detected: $JAR_FILE"
-          ssh $VPS_USER@$VPS_HOST "pkill -f $APP_PATH || true"
-          scp $JAR_FILE $VPS_USER@$VPS_HOST:$APP_PATH
+
+          echo "Uploading JAR to VPS..."
+          scp $JAR_FILE $VPS_USER@$VPS_HOST:$APP_PATH/$SERVICE_NAME.jar
+
+          echo "Restarting application on VPS..."
           ssh $VPS_USER@$VPS_HOST << EOF
-            nohup java -jar $APP_PATH/$JAR_FILE > $APP_PATH/app.log 2>&1 &
+            # Stop old app if running
+            PID=\$(pgrep -f "$APP_PATH/$SERVICE_NAME.jar" || true)
+            if [ -n "\$PID" ]; then
+              echo "Stopping old process PID: \$PID"
+              kill \$PID
+              sleep 3
+            fi
+
+            # Start new app
+            echo "Starting new application..."
+            nohup java -jar $APP_PATH/$SERVICE_NAME.jar > $APP_PATH/app.log 2>&1 &
+            echo "Application restarted successfully!"
           EOF
