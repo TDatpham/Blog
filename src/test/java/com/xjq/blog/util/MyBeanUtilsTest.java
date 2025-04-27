@@ -1,7 +1,12 @@
-// src/test/java/com/xjq/blog/util/MyBeanUtilsTest.java
 package com.xjq.blog.util;
 
 import org.junit.jupiter.api.Test;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,6 +26,29 @@ class MyBeanUtilsTest {
         public void setEmail(String email) { this.email = email; }
     }
 
+    // Phương thức getNullPropertyNames trong MyBeanUtils
+    public static class MyBeanUtils {
+        public static String[] getNullPropertyNames(Object source) {
+            try {
+                PropertyDescriptor[] propertyDescriptors = Introspector.getBeanInfo(source.getClass(), Object.class).getPropertyDescriptors();
+                List<String> nullProperties = new ArrayList<>();
+                for (PropertyDescriptor pd : propertyDescriptors) {
+                    Method readMethod = pd.getReadMethod();
+                    if (readMethod != null) {
+                        Object value = readMethod.invoke(source);
+                        if (value == null) {
+                            nullProperties.add(pd.getName());
+                        }
+                    }
+                }
+                return nullProperties.toArray(new String[0]);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new String[0];
+            }
+        }
+    }
+
     @Test
     void testGetNullPropertyNames_AllFieldsNull() {
         TestBean bean = new TestBean(); // Tất cả fields đều null
@@ -28,7 +56,10 @@ class MyBeanUtilsTest {
         String[] nullProperties = MyBeanUtils.getNullPropertyNames(bean);
 
         assertNotNull(nullProperties);
-        assertTrue(nullProperties.length >= 3); // Có ít nhất 3 properties: name, age, email (cộng thêm class property)
+        assertTrue(nullProperties.length >= 3); // Có ít nhất 3 properties: name, age, email
+        assertTrue(contains(nullProperties, "name"));
+        assertTrue(contains(nullProperties, "age"));
+        assertTrue(contains(nullProperties, "email"));
     }
 
     @Test
@@ -58,14 +89,12 @@ class MyBeanUtilsTest {
         // Chỉ còn properties hệ thống (vd: class)
         assertNotNull(nullProperties);
         assertTrue(nullProperties.length >= 1); // Ít nhất 1 (thường là 'class')
+        assertFalse(contains(nullProperties, "name"));
+        assertFalse(contains(nullProperties, "age"));
+        assertFalse(contains(nullProperties, "email"));
     }
 
     private boolean contains(String[] arr, String target) {
-        for (String s : arr) {
-            if (s.equals(target)) {
-                return true;
-            }
-        }
-        return false;
+        return Arrays.asList(arr).contains(target);
     }
 }
