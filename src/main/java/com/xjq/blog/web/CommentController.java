@@ -23,7 +23,8 @@ public class CommentController {
     @Autowired
     private BlogService blogService;
 
-    @Value("${comment.avatar}")
+    // nếu comment.avatar không được định nghĩa, avatar sẽ lấy rỗng:
+    @Value("${comment.avatar:}")
     private String avatar;
 
     @GetMapping("/comments/{blogId}")
