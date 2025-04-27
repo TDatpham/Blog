@@ -1,4 +1,3 @@
-// src/test/java/com/xjq/blog/service/BlogServiceImplTest.java
 package com.xjq.blog.service;
 
 import com.xjq.blog.NotFoundException;
@@ -40,12 +39,12 @@ class BlogServiceImplTest {
     @Test
     void testGetBlog() {
         Blog blog = new Blog();
-        when(blogRepository.findOne(1L)).thenReturn(blog);
+        when(blogRepository.findById(1L)).thenReturn(java.util.Optional.of(blog));
 
         Blog result = blogService.getBlog(1L);
 
         assertNotNull(result);
-        verify(blogRepository).findOne(1L);
+        verify(blogRepository).findById(1L);
     }
 
     @Test
@@ -136,7 +135,7 @@ class BlogServiceImplTest {
         Blog blog = new Blog();
         blog.setContent("## Title");
 
-        when(blogRepository.findOne(1L)).thenReturn(blog);
+        when(blogRepository.findById(1L)).thenReturn(java.util.Optional.of(blog));
 
         Blog result = blogService.getAndConvert(1L);
 
@@ -147,7 +146,7 @@ class BlogServiceImplTest {
 
     @Test
     void testGetAndConvert_NotFound() {
-        when(blogRepository.findOne(1L)).thenReturn(null);
+        when(blogRepository.findById(1L)).thenReturn(java.util.Optional.empty());
 
         assertThrows(NotFoundException.class, () -> blogService.getAndConvert(1L));
     }
@@ -192,7 +191,7 @@ class BlogServiceImplTest {
         Blog updatedBlog = new Blog();
         updatedBlog.setTitle("New Title");
 
-        when(blogRepository.findOne(1L)).thenReturn(existBlog);
+        when(blogRepository.findById(1L)).thenReturn(java.util.Optional.of(existBlog));
         when(blogRepository.save(any(Blog.class))).thenReturn(existBlog);
 
         Blog result = blogService.updateBlog(1L, updatedBlog);
@@ -203,7 +202,7 @@ class BlogServiceImplTest {
 
     @Test
     void testUpdateBlog_NotFound() {
-        when(blogRepository.findOne(1L)).thenReturn(null);
+        when(blogRepository.findById(1L)).thenReturn(java.util.Optional.empty());
 
         assertThrows(NotFoundException.class, () -> blogService.updateBlog(1L, new Blog()));
     }

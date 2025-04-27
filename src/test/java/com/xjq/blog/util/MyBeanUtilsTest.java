@@ -41,7 +41,7 @@ class MyBeanUtilsTest {
                         }
                     }
                 }
-                return nullProperties.toArray(new String[0]);
+                return nullProperties.isEmpty() ? new String[0] : nullProperties.toArray(new String[0]);
             } catch (Exception e) {
                 e.printStackTrace();
                 return new String[0];
@@ -86,13 +86,10 @@ class MyBeanUtilsTest {
 
         String[] nullProperties = MyBeanUtils.getNullPropertyNames(bean);
 
-        // Chỉ còn properties hệ thống (vd: class)
         assertNotNull(nullProperties);
-        assertTrue(nullProperties.length >= 1); // Ít nhất 1 (thường là 'class')
-        assertFalse(contains(nullProperties, "name"));
-        assertFalse(contains(nullProperties, "age"));
-        assertFalse(contains(nullProperties, "email"));
+        assertEquals(0, nullProperties.length); // Không có trường nào null
     }
+
 
     private boolean contains(String[] arr, String target) {
         return Arrays.asList(arr).contains(target);
