@@ -14,7 +14,8 @@ class MarkdownUtilsTest {
         String html = MarkdownUtils.markdownToHtml(markdown);
 
         assertNotNull(html);
-        assertTrue(html.contains("<h1>")); // Kiểm tra có thẻ <h1>
+        // Sửa: kiểm tra tag <h1> hoặc có id attribute
+        assertTrue(html.contains("<h1"), "Expected HTML to contain an H1 element");
         assertTrue(html.contains("Hello World"));
     }
 
@@ -24,8 +25,8 @@ class MarkdownUtilsTest {
         String html = MarkdownUtils.markdownToHtmlExtensions(markdown);
 
         assertNotNull(html);
-        assertTrue(html.contains("<a"));
-        assertTrue(html.contains("target=\"_blank\"")); // Kiểm tra a tag có target _blank
+        assertTrue(html.contains("<a"), "Expected HTML to contain an anchor tag");
+        assertTrue(html.contains("target=\"_blank\""), "Expected anchor tag to have target=\"_blank\"");
     }
 
     @Test
@@ -37,7 +38,7 @@ class MarkdownUtilsTest {
         String html = MarkdownUtils.markdownToHtmlExtensions(markdown);
 
         assertNotNull(html);
-        assertTrue(html.contains("<table")); // Có table
-        assertTrue(html.contains("class=\"ui celled table\"")); // Có class đúng
+        assertTrue(html.contains("<table"), "Expected HTML to contain a table element");
+        assertTrue(html.contains("class=\"ui celled table\""), "Expected table to have class=\"ui celled table\"");
     }
 }
