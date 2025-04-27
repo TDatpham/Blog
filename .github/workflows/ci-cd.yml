@@ -23,7 +23,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: '11'
-          distribution: 'adoptopenjdk'
+          distribution: 'temurin'  # Sửa thành temurin thay vì adoptopenjdk
 
       # Bước 3: Cài đặt Maven và thực hiện build dự án Spring Boot
       - name: Build with Maven
@@ -48,7 +48,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: '11'
-          distribution: 'adoptopenjdk'
+          distribution: 'temurin'  # Sửa thành temurin thay vì adoptopenjdk
 
       # Bước 3: Cài đặt Maven và build lại dự án để tạo bản build (nếu cần)
       - name: Build with Maven
