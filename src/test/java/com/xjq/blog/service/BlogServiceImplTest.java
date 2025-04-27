@@ -4,7 +4,6 @@ import com.xjq.blog.NotFoundException;
 import com.xjq.blog.dao.BlogRepository;
 import com.xjq.blog.po.Blog;
 import com.xjq.blog.vo.BlogQuery;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -20,10 +19,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.openMocks;
 
 @ExtendWith(MockitoExtension.class)
 class BlogServiceImplTest {
@@ -34,20 +34,15 @@ class BlogServiceImplTest {
     @InjectMocks
     private BlogServiceImpl blogService;
 
-    @BeforeEach
-    void setUp() {
-        openMocks(this);
-    }
-
     @Test
     void testGetBlog() {
         Blog blog = new Blog();
-        when(blogRepository.findOne(1L)).thenReturn(blog);
+        when(blogRepository.findById(1L)).thenReturn(Optional.of(blog));
 
         Blog result = blogService.getBlog(1L);
 
         assertNotNull(result);
-        verify(blogRepository).findOne(1L);
+        verify(blogRepository).findById(1L);
     }
 
     @Test
@@ -132,7 +127,9 @@ class BlogServiceImplTest {
     void testGetAndConvert_Success() {
         Blog blog = new Blog();
         blog.setContent("## Title");
-        when(blogRepository.findOne(1L)).thenReturn(blog);
+        when(blogRepository.findById(1L)).thenReturn(Optional.of(blog));
+        // assume updateViews is a void method
+        doNothing().when(blogRepository).updateViews(1L);
 
         Blog result = blogService.getAndConvert(1L);
 
@@ -144,7 +141,7 @@ class BlogServiceImplTest {
 
     @Test
     void testGetAndConvert_NotFound() {
-        when(blogRepository.findOne(1L)).thenReturn(null);
+        when(blogRepository.findById(1L)).thenReturn(Optional.empty());
         assertThrows(NotFoundException.class, () -> blogService.getAndConvert(1L));
     }
 
@@ -185,7 +182,7 @@ class BlogServiceImplTest {
     void testUpdateBlog_Success() {
         Blog existBlog = new Blog();
         existBlog.setTitle("Old Title");
-        when(blogRepository.findOne(1L)).thenReturn(existBlog);
+        when(blogRepository.findById(1L)).thenReturn(Optional.of(existBlog));
         when(blogRepository.save(any(Blog.class))).thenReturn(existBlog);
 
         Blog updatedBlog = new Blog();
@@ -199,7 +196,7 @@ class BlogServiceImplTest {
 
     @Test
     void testUpdateBlog_NotFound() {
-        when(blogRepository.findOne(1L)).thenReturn(null);
+        when(blogRepository.findById(1L)).thenReturn(Optional.empty());
         assertThrows(NotFoundException.class, () -> blogService.updateBlog(1L, new Blog()));
     }
 

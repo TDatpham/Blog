@@ -1,13 +1,11 @@
-package com.xjq.blog;
+package com.xjq.blog;    // ← đây phải là root package
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class BlogApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(BlogApplication.class, args);
     }
-
 }
