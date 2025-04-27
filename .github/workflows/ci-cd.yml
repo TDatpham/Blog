@@ -1,3 +1,4 @@
+# .github/workflows/ci-cd.yml
 name: Java CI/CD with Maven
 
 on:
@@ -29,7 +30,7 @@ jobs:
         run: mvn test
 
       - name: Upload build artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2
         with:
           name: blog-app
           path: target/*.jar
@@ -43,7 +44,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Download build artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v2
         with:
           name: blog-app
 
@@ -67,9 +68,8 @@ jobs:
         run: |
           JAR_FILE=$(ls *.jar)
           echo "Jar file detected: $JAR_FILE"
+          ssh $VPS_USER@$VPS_HOST "pkill -f $APP_PATH || true"
           scp $JAR_FILE $VPS_USER@$VPS_HOST:$APP_PATH
           ssh $VPS_USER@$VPS_HOST << EOF
-            pkill -f "$APP_PATH" || true
-            sleep 2
             nohup java -jar $APP_PATH/$JAR_FILE > $APP_PATH/app.log 2>&1 &
           EOF
