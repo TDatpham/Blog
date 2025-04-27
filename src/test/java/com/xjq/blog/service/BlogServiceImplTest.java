@@ -39,7 +39,7 @@ class BlogServiceImplTest {
     @Test
     void testGetBlog() {
         Blog blog = new Blog();
-        when(blogRepository.findOne(1L)).thenReturn(blog);  // use findOne for service compatibility
+        when(blogRepository.findOne(1L)).thenReturn(blog);
 
         Blog result = blogService.getBlog(1L);
 
@@ -129,12 +129,13 @@ class BlogServiceImplTest {
     void testGetAndConvert_Success() {
         Blog blog = new Blog();
         blog.setContent("## Title");
-        when(blogRepository.findOne(1L)).thenReturn(blog);  // use findOne mock
+        when(blogRepository.findOne(1L)).thenReturn(blog);
 
         Blog result = blogService.getAndConvert(1L);
 
         assertNotNull(result);
-        assertTrue(result.getContent().contains("<h2>"));
+        assertTrue(result.getContent().contains("<h2"),
+                "Expected HTML to contain an h2 element but was: " + result.getContent());
         verify(blogRepository).updateViews(1L);
     }
 
@@ -181,7 +182,7 @@ class BlogServiceImplTest {
     void testUpdateBlog_Success() {
         Blog existBlog = new Blog();
         existBlog.setTitle("Old Title");
-        when(blogRepository.findOne(1L)).thenReturn(existBlog);  // use findOne mock
+        when(blogRepository.findOne(1L)).thenReturn(existBlog);
         when(blogRepository.save(any(Blog.class))).thenReturn(existBlog);
 
         Blog updatedBlog = new Blog();
