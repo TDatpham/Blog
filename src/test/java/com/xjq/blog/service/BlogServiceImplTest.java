@@ -39,14 +39,13 @@ class BlogServiceImplTest {
     @Test
     void testGetBlog() {
         Blog blog = new Blog();
-        when(blogRepository.findOne(1L)).thenReturn(blog);  // Mock trả về đối tượng Blog hợp lệ
+        when(blogRepository.findById(1L)).thenReturn(java.util.Optional.of(blog));  // Sửa từ findOne sang findById
 
         Blog result = blogService.getBlog(1L);
 
         assertNotNull(result);  // Kiểm tra result không null
-        verify(blogRepository).findOne(1L);  // Kiểm tra phương thức findOne được gọi
+        verify(blogRepository).findById(1L);  // Kiểm tra phương thức findById được gọi
     }
-
 
     @Test
     void testListBlog_WithBlogQuery() {
@@ -136,7 +135,7 @@ class BlogServiceImplTest {
         Blog blog = new Blog();
         blog.setContent("## Title");  // Đảm bảo có nội dung để chuyển đổi
 
-        when(blogRepository.findOne(1L)).thenReturn(blog);  // Mock trả về blog hợp lệ
+        when(blogRepository.findById(1L)).thenReturn(java.util.Optional.of(blog));  // Mock trả về blog hợp lệ
 
         Blog result = blogService.getAndConvert(1L);
 
@@ -144,7 +143,6 @@ class BlogServiceImplTest {
         assertTrue(result.getContent().contains("<h2>"));  // Kiểm tra nội dung đã được chuyển đổi sang HTML
         verify(blogRepository).updateViews(1L);  // Kiểm tra xem views có được cập nhật không
     }
-
 
     @Test
     void testGetAndConvert_NotFound() {
@@ -193,7 +191,7 @@ class BlogServiceImplTest {
         Blog updatedBlog = new Blog();  // Blog mới để cập nhật
         updatedBlog.setTitle("New Title");  // Cập nhật title
 
-        when(blogRepository.findOne(1L)).thenReturn(existBlog);  // Mock blog tồn tại
+        when(blogRepository.findById(1L)).thenReturn(java.util.Optional.of(existBlog));  // Mock blog tồn tại
         when(blogRepository.save(any(Blog.class))).thenReturn(existBlog);  // Mock phương thức save
 
         Blog result = blogService.updateBlog(1L, updatedBlog);
@@ -202,7 +200,6 @@ class BlogServiceImplTest {
         assertEquals("New Title", result.getTitle());  // Kiểm tra title đã được cập nhật
         verify(blogRepository).save(existBlog);  // Kiểm tra phương thức save có được gọi không
     }
-
 
     @Test
     void testUpdateBlog_NotFound() {
