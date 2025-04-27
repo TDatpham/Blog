@@ -1,0 +1,34 @@
+# Maven
+target/
+# Eclipse
+.classpath
+.project
+.settings/
+# IntelliJ IDEA
+.idea/
+*.iml
+# Logs
+*.log
+# OS files
+.DS_Store
+Thumbs.db
+# NetBeans
+nbproject/
+# Windows Installer
+*.cab
+*.msi
+# Gradle
+.gradle/
+build/
+# Spring Boot DevTools
+*.jar
+*.war
+*.ear
+*.class
+*.log
+*.out
+# Specific for Java Projects
+*.swp
+*.bak
+*.tmp
+*.log

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="admin/_fragments :: head(~{::title})">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Management</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <link rel="stylesheet" href="../../static/css/me.css">
+</head>
+<body>
+    <!--导航-->
+    <nav th:replace="admin/_fragments :: menu(0)" class="ui inverted attached segment m-padded-tb-mini m-shadow-small">
+        <div class="ui container">
+            <div class="ui inverted secondary stackable menu">
+                <h2 class="ui teal header item">Management</h2>
+                <a href="#" class="active m-item item m-mobile-hide"><i class="mini home icon"></i>Blogs</a>
+                <a href="#" class="m-item item m-mobile-hide"><i class="mini idea icon"></i>Categories</a>
+                <a href="#" class="m-item item m-mobile-hide"><i class="mini tags icon"></i>Tags</a>
+                <div class="right m-item m-mobile-hide menu">
+                    <div class="ui dropdown item">
+                        <div class="text">
+                            <img class="ui avatar image" src="https://scontent.fsgn5-9.fna.fbcdn.net/v/t39.30808-6/489996689_1737969080436835_5545207021967469183_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeE-ps0OsZJwCXmFQ6n-K0t4IWoxFGlVRUghajEUaVVFSBn5_Ap1abhFbDryB2hchyJIppP99XQ1dXfXvIWSmwi0&_nc_ohc=wtOhSiAIyRkQ7kNvwGotyuC&_nc_oc=AdmljAaWCSAcV6sso8CfY9I4YvYV6MSfzmof8ry8l6ObLl18LkFVn_8fiBtwozcZMlo&_nc_zt=23&_nc_ht=scontent.fsgn5-9.fna&_nc_gid=i48rgU0xVwn1ATR4_mS6oQ&oh=00_AfE8Ti-HN-kBJYVX0F99GGfzmyJRNLd7zYZhHTPCEy3Wgw&oe=680F78CE">
+                            Thanh Dat
+                        </div>
+                        <i class="dropdown icon"></i>
+                        <div class="menu">
+                            <a href="#" class="item">Sign Out</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a href="#" class="ui menu toggle black icon button m-right-top m-mobile-show">
+            <i class="sidebar icon"></i>
+        </a>
+    </nav>
+
+    <div  class="m-container-small m-padded-tb-big">
+        <div class="ui container">
+            <div class="ui success large  message">
+                <h3>Hi,</h3>
+                <p>Thanh Dat，Welcome！</p>
+            </div>
+
+            <img src="https://unsplash.it/1000/400?image=1005" alt="" class="ui rounded bordered fluid image">
+        </div>
+    </div>
+
+    <br>
+    <br>
+    <!--底部footer-->
+    <footer th:replace="admin/_fragments :: footer" class="ui inverted vertical segment m-padded-tb-massive">
+        <div class="ui center aligned container">
+            <div class="ui inverted divided stackable grid">
+                <div class="three wide column">
+                    <div class="ui inverted link list">
+                        <div class="item">
+                            <img src="../../static/images/wechat.png" class="ui rounded image" alt="" style="width: 110px">
+                        </div>
+                    </div>
+                </div>
+                <div class="three wide column">
+                    <h4 class="ui inverted m-text-thin header m-text-space">Latest Posts</h4>
+                    <div class="ui inverted link list">
+                        <a href="#" class="item">User Story</a>
+                        <a href="#" class="item">User Story</a>
+                        <a href="#" class="item">User Story</a>
+                    </div>
+                </div>
+                <div class="three wide column">
+                    <h4 class="ui inverted m-text-thin header m-text-space">Contact Me</h4>
+                    <div class="ui inverted link list">
+                        <a href="#" class="item">Email: phamthanhdat2003vl1@gmail.com</a>
+                        <a href="https://www.linkedin.com/in/jq-xiao/" class="item">Linkedin</a>
+                    </div>
+                </div>
+                <div class="seven wide column">
+                    <h4 class="ui inverted m-text-thin header m-text-space">Blog</h4>
+                    <p class="m-text-thin m-text-space m-opacity-mini">1111111111111111111111111111</p>
+                </div>
+            </div>
+            <div class="ui inverted section divider"></div>
+            <p class="m-text-thin m-text-space m-opacity-tiny">Copyright © 2024-2025 Designed by Thanh Dat Pham </p>
+        </div>
+
+    </footer>
+    <!--/*/<th:block th:replace="admin/_fragments :: script">/*/-->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+    <!--/*/</th:block>/*/-->
+
+    <script>
+        $('.menu.toggle').click(function () {
+            $('.m-item').toggleClass('m-mobile-hide');
+        });
+
+        $('.ui.dropdown').dropdown({
+            on : 'hover'
+        });
+    </script>
+</body>
+</html>
