@@ -97,7 +97,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.22.2</version> <!-- Thử sử dụng phiên bản mới hơn nếu cần -->
+                <version>3.0.0-M5</version>
             </plugin>
         </plugins>
     </build>
