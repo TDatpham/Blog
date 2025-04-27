@@ -39,12 +39,12 @@ class BlogServiceImplTest {
     @Test
     void testGetBlog() {
         Blog blog = new Blog();
-        when(blogRepository.findById(1L)).thenReturn(java.util.Optional.of(blog));  // Sửa từ findOne sang findById
+        when(blogRepository.findOne(1L)).thenReturn(blog);  // use findOne for service compatibility
 
         Blog result = blogService.getBlog(1L);
 
-        assertNotNull(result);  // Kiểm tra result không null
-        verify(blogRepository).findById(1L);  // Kiểm tra phương thức findById được gọi
+        assertNotNull(result);
+        verify(blogRepository).findOne(1L);
     }
 
     @Test
@@ -66,7 +66,6 @@ class BlogServiceImplTest {
     @Test
     void testSaveBlog_New() {
         Blog blog = new Blog();
-
         when(blogRepository.save(any(Blog.class))).thenReturn(blog);
 
         Blog result = blogService.saveBlog(blog);
@@ -81,7 +80,6 @@ class BlogServiceImplTest {
     void testSaveBlog_Update() {
         Blog blog = new Blog();
         blog.setId(1L);
-
         when(blogRepository.save(any(Blog.class))).thenReturn(blog);
 
         Blog result = blogService.saveBlog(blog);
@@ -95,7 +93,6 @@ class BlogServiceImplTest {
     void testListBlog_NoCondition() {
         Pageable pageable = PageRequest.of(0, 5);
         Page<Blog> page = new PageImpl<>(Collections.emptyList());
-
         when(blogRepository.findAll(pageable)).thenReturn(page);
 
         Page<Blog> result = blogService.listBlog(pageable);
@@ -108,7 +105,6 @@ class BlogServiceImplTest {
     void testListBlog_ByTagId() {
         Pageable pageable = PageRequest.of(0, 5);
         Page<Blog> page = new PageImpl<>(Collections.emptyList());
-
         when(blogRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(page);
 
         Page<Blog> result = blogService.listBlog(1L, pageable);
@@ -121,7 +117,6 @@ class BlogServiceImplTest {
     void testListBlog_ByQueryString() {
         Pageable pageable = PageRequest.of(0, 5);
         Page<Blog> page = new PageImpl<>(Collections.emptyList());
-
         when(blogRepository.findByQuery(eq("test"), eq(pageable))).thenReturn(page);
 
         Page<Blog> result = blogService.listBlog("test", pageable);
@@ -133,28 +128,25 @@ class BlogServiceImplTest {
     @Test
     void testGetAndConvert_Success() {
         Blog blog = new Blog();
-        blog.setContent("## Title");  // Đảm bảo có nội dung để chuyển đổi
-
-        when(blogRepository.findById(1L)).thenReturn(java.util.Optional.of(blog));  // Mock trả về blog hợp lệ
+        blog.setContent("## Title");
+        when(blogRepository.findOne(1L)).thenReturn(blog);  // use findOne mock
 
         Blog result = blogService.getAndConvert(1L);
 
         assertNotNull(result);
-        assertTrue(result.getContent().contains("<h2>"));  // Kiểm tra nội dung đã được chuyển đổi sang HTML
-        verify(blogRepository).updateViews(1L);  // Kiểm tra xem views có được cập nhật không
+        assertTrue(result.getContent().contains("<h2>"));
+        verify(blogRepository).updateViews(1L);
     }
 
     @Test
     void testGetAndConvert_NotFound() {
-        when(blogRepository.findById(1L)).thenReturn(java.util.Optional.empty());
-
+        when(blogRepository.findOne(1L)).thenReturn(null);
         assertThrows(NotFoundException.class, () -> blogService.getAndConvert(1L));
     }
 
     @Test
     void testListRecommendBlogTop() {
         List<Blog> blogs = Arrays.asList(new Blog(), new Blog());
-
         when(blogRepository.findTop(any(Pageable.class))).thenReturn(blogs);
 
         List<Blog> result = blogService.listRecommendBlogTop(2);
@@ -187,34 +179,30 @@ class BlogServiceImplTest {
 
     @Test
     void testUpdateBlog_Success() {
-        Blog existBlog = new Blog();  // Blog hiện tại
-        Blog updatedBlog = new Blog();  // Blog mới để cập nhật
-        updatedBlog.setTitle("New Title");  // Cập nhật title
+        Blog existBlog = new Blog();
+        existBlog.setTitle("Old Title");
+        when(blogRepository.findOne(1L)).thenReturn(existBlog);  // use findOne mock
+        when(blogRepository.save(any(Blog.class))).thenReturn(existBlog);
 
-        when(blogRepository.findById(1L)).thenReturn(java.util.Optional.of(existBlog));  // Mock blog tồn tại
-        when(blogRepository.save(any(Blog.class))).thenReturn(existBlog);  // Mock phương thức save
-
+        Blog updatedBlog = new Blog();
+        updatedBlog.setTitle("New Title");
         Blog result = blogService.updateBlog(1L, updatedBlog);
 
-        assertNotNull(result);  // Kiểm tra kết quả không null
-        assertEquals("New Title", result.getTitle());  // Kiểm tra title đã được cập nhật
-        verify(blogRepository).save(existBlog);  // Kiểm tra phương thức save có được gọi không
+        assertNotNull(result);
+        assertEquals("New Title", result.getTitle());
+        verify(blogRepository).save(existBlog);
     }
 
     @Test
     void testUpdateBlog_NotFound() {
-        when(blogRepository.findById(1L)).thenReturn(java.util.Optional.empty());
-
+        when(blogRepository.findOne(1L)).thenReturn(null);
         assertThrows(NotFoundException.class, () -> blogService.updateBlog(1L, new Blog()));
     }
 
     @Test
     void testDeleteBlog() {
         doNothing().when(blogRepository).deleteById(1L);
-
         blogService.deleteBlog(1L);
-
         verify(blogRepository).deleteById(1L);
     }
 }
-//hello
