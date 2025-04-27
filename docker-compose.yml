@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: blog-mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: blog
+      MYSQL_ROOT_PASSWORD: 1234567890
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - blog-network
+
+  blog-app:
+    build: .
+    container_name: blog-app
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/blog?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 1234567890
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL5Dialect
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+      SPRING_PROFILES_ACTIVE: dev
+    networks:
+      - blog-network
+
+volumes:
+  mysql-data:
+
+networks:
+  blog-network:
+    driver: bridge

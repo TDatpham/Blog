@@ -1,4 +1,4 @@
-name: Java CI with Maven
+name: Java CI/CD with Maven
 
 on:
   push:
@@ -16,17 +16,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up JDK 11
+      - name: Set up JDK 8
         uses: actions/setup-java@v2
         with:
           java-version: '8'
           distribution: 'temurin'
 
       - name: Build with Maven
-        run: mvn clean install --no-transfer-progress
+        run: mvn clean package -DskipTests --no-transfer-progress
 
       - name: Run Unit Tests
         run: mvn test
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: blog-app
+          path: target/*.jar
 
   deploy:
     runs-on: ubuntu-latest
@@ -36,14 +42,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up JDK 11
-        uses: actions/setup-java@v2
+      - name: Download build artifact
+        uses: actions/download-artifact@v3
         with:
-          java-version: '8'
-          distribution: 'temurin'
-
-      - name: Build with Maven
-        run: mvn clean package --no-transfer-progress
+          name: blog-app
 
       - name: Install SSH Client
         run: sudo apt-get update && sudo apt-get install -y openssh-client
@@ -51,7 +53,6 @@ jobs:
       - name: Set up SSH
         env:
           VPS_HOST: 160.250.134.209
-          VPS_USER: root
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.VPS_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
@@ -62,9 +63,13 @@ jobs:
         env:
           VPS_HOST: 160.250.134.209
           VPS_USER: root
-          APP_PATH: /home/root/apps/blog
-          JAR_NAME: my-spring-boot-app.jar
+          APP_PATH: /root/apps/blog
         run: |
-          cd target
-          scp $JAR_NAME $VPS_USER@$VPS_HOST:$APP_PATH
-          ssh $VPS_USER@$VPS_HOST "nohup java -jar $APP_PATH/$JAR_NAME > $APP_PATH/app.log 2>&1 &"
+          JAR_FILE=$(ls *.jar)
+          echo "Jar file detected: $JAR_FILE"
+          scp $JAR_FILE $VPS_USER@$VPS_HOST:$APP_PATH
+          ssh $VPS_USER@$VPS_HOST << EOF
+            pkill -f "$APP_PATH" || true
+            sleep 2
+            nohup java -jar $APP_PATH/$JAR_FILE > $APP_PATH/app.log 2>&1 &
+          EOF
