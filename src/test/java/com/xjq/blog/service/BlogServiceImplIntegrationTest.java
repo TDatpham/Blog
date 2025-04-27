@@ -48,7 +48,7 @@ class BlogServiceImplIntegrationTest {
 
         Blog result = blogService.getBlog(1L);
 
-        assertNotNull(result);
+        assertNotNull(result, "Expected the result to be non-null");
         verify(blogRepository).findById(1L);
     }
 
@@ -134,7 +134,9 @@ class BlogServiceImplIntegrationTest {
         Blog blog = new Blog();
         blog.setContent("## Title");
         when(blogRepository.findById(1L)).thenReturn(Optional.of(blog));
-        doNothing().when(blogRepository).updateViews(1L);
+
+        // Nếu `updateViews` không phải là void, bạn cần chỉnh lại cách mock
+        when(blogRepository.updateViews(1L)).thenReturn(null); // giả sử phương thức trả về void hoặc xử lý theo cách khác
 
         Blog result = blogService.getAndConvert(1L);
 

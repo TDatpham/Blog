@@ -28,7 +28,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
+@MockitoSettings(strictness = Strictness.STRICT_STUBS)  // Sử dụng strictness để đảm bảo tất cả các đối tượng được mock đúng cách
 class BlogServiceImplTest {
 
     @Mock
@@ -131,7 +131,6 @@ class BlogServiceImplTest {
         Blog blog = new Blog();
         blog.setContent("## Title");
         when(blogRepository.findById(1L)).thenReturn(Optional.of(blog));
-        // assume updateViews is a void method
         doNothing().when(blogRepository).updateViews(1L);
 
         Blog result = blogService.getAndConvert(1L);
