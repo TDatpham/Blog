@@ -53,7 +53,7 @@ jobs:
         env:
           VPS_HOST: 160.250.134.209
           VPS_USER: root
-          VPS_PASSWORD: thanhdat8203
+          VPS_PASSWORD: B9TBCyQR~uy
           APP_PATH: /root/apps/blog
           SERVICE_NAME: blog-app
         run: |
