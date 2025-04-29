@@ -44,20 +44,16 @@ jobs:
         with:
           name: blog-app
 
-      - name: Install SSH Client
-        run: sudo apt-get update && sudo apt-get install -y openssh-client
-
-      - name: Set up SSH
+      - name: Install SSH Client and sshpass
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.VPS_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+          sudo apt-get update
+          sudo apt-get install -y openssh-client sshpass
 
       - name: Deploy and Restart App
         env:
-          VPS_HOST: ${{ secrets.VPS_HOST }}
-          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_HOST: 160.250.134.209
+          VPS_USER: root
+          VPS_PASSWORD: thanhdat8203
           APP_PATH: /root/apps/blog
           SERVICE_NAME: blog-app
         run: |
@@ -65,10 +61,10 @@ jobs:
           echo "Jar file detected: $JAR_FILE"
 
           echo "Uploading JAR to VPS..."
-          scp $JAR_FILE $VPS_USER@$VPS_HOST:$APP_PATH/$SERVICE_NAME.jar
+          sshpass -p "$VPS_PASSWORD" scp $JAR_FILE $VPS_USER@$VPS_HOST:$APP_PATH/$SERVICE_NAME.jar
 
           echo "Restarting application on VPS..."
-          ssh $VPS_USER@$VPS_HOST << 'EOF'
+          sshpass -p "$VPS_PASSWORD" ssh -o StrictHostKeyChecking=no $VPS_USER@$VPS_HOST << 'EOF'
             set -e
             APP_PATH="/root/apps/blog"
             SERVICE_NAME="blog-app"
