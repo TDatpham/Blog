@@ -25,9 +25,6 @@ jobs:
       - name: Build with Maven
         run: mvn clean package -DskipTests --no-transfer-progress
 
-#      - name: Run Unit Tests
-#        run: mvn test
-
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
@@ -51,18 +48,16 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y openssh-client
 
       - name: Set up SSH
-        env:
-          VPS_HOST: 160.250.134.209
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.VPS_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H $VPS_HOST >> ~/.ssh/known_hosts
+          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
 
       - name: Deploy and Restart App
         env:
-          VPS_HOST: 160.250.134.209
-          VPS_USER: root
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
           APP_PATH: /root/apps/blog
           SERVICE_NAME: blog-app
         run: |
@@ -73,16 +68,18 @@ jobs:
           scp $JAR_FILE $VPS_USER@$VPS_HOST:$APP_PATH/$SERVICE_NAME.jar
 
           echo "Restarting application on VPS..."
-          ssh $VPS_USER@$VPS_HOST << EOF
-            # Stop old app if running
-            PID=\$(pgrep -f "$APP_PATH/$SERVICE_NAME.jar" || true)
-            if [ -n "\$PID" ]; then
-              echo "Stopping old process PID: \$PID"
-              kill \$PID
+          ssh $VPS_USER@$VPS_HOST << 'EOF'
+            set -e
+            APP_PATH="/root/apps/blog"
+            SERVICE_NAME="blog-app"
+
+            PID=$(pgrep -f "$APP_PATH/$SERVICE_NAME.jar" || true)
+            if [ -n "$PID" ]; then
+              echo "Stopping old process PID: $PID"
+              kill $PID
               sleep 3
             fi
 
-            # Start new app
             echo "Starting new application..."
             nohup java -jar $APP_PATH/$SERVICE_NAME.jar > $APP_PATH/app.log 2>&1 &
             echo "Application restarted successfully!"
