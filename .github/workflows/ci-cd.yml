@@ -61,22 +61,22 @@ jobs:
           echo "Jar file detected: $JAR_FILE"
 
           echo "Uploading JAR to VPS..."
-          sshpass -p "$VPS_PASSWORD" scp $JAR_FILE $VPS_USER@$VPS_HOST:$APP_PATH/$SERVICE_NAME.jar
+          sshpass -p "$VPS_PASSWORD" scp -o StrictHostKeyChecking=no "$JAR_FILE" "$VPS_USER@$VPS_HOST:$APP_PATH/$SERVICE_NAME.jar"
 
           echo "Restarting application on VPS..."
-          sshpass -p "$VPS_PASSWORD" ssh -o StrictHostKeyChecking=no $VPS_USER@$VPS_HOST << 'EOF'
+          sshpass -p "$VPS_PASSWORD" ssh -o StrictHostKeyChecking=no $VPS_USER@$VPS_HOST << EOF
             set -e
-            APP_PATH="/root/apps/blog"
-            SERVICE_NAME="blog-app"
+            APP_PATH="$APP_PATH"
+            SERVICE_NAME="$SERVICE_NAME"
 
-            PID=$(pgrep -f "$APP_PATH/$SERVICE_NAME.jar" || true)
-            if [ -n "$PID" ]; then
-              echo "Stopping old process PID: $PID"
-              kill $PID
+            PID=\$(pgrep -f "\$APP_PATH/\$SERVICE_NAME.jar" || true)
+            if [ -n "\$PID" ]; then
+              echo "Stopping old process PID: \$PID"
+              kill \$PID
               sleep 3
             fi
 
             echo "Starting new application..."
-            nohup java -jar $APP_PATH/$SERVICE_NAME.jar > $APP_PATH/app.log 2>&1 &
+            nohup java -jar \$APP_PATH/\$SERVICE_NAME.jar > \$APP_PATH/app.log 2>&1 &
             echo "Application restarted successfully!"
           EOF
