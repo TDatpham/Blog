@@ -1,9 +1,8 @@
 package com.xjq.blog.web;
 
-import com.xjq.blog.po.Tag;
+import com.xjq.blog.model.Tag;
 import com.xjq.blog.service.BlogService;
 import com.xjq.blog.service.TagService;
-import com.xjq.blog.vo.BlogQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;

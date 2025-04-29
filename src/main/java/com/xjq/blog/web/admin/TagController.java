@@ -1,6 +1,6 @@
 package com.xjq.blog.web.admin;
 
-import com.xjq.blog.po.Tag;
+import com.xjq.blog.model.Tag;
 import com.xjq.blog.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;

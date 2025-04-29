@@ -1,8 +1,8 @@
 package com.xjq.blog.service;
 
 import com.xjq.blog.NotFoundException;
-import com.xjq.blog.dao.BlogRepository;
-import com.xjq.blog.po.Blog;
+import com.xjq.blog.repository.BlogRepository;
+import com.xjq.blog.model.Blog;
 import com.xjq.blog.vo.BlogQuery;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -12,11 +12,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -28,6 +30,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+@SpringBootTest
+@ActiveProfiles("test")
 @Disabled("Temporarily disabled for debugging")
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.STRICT_STUBS)  // Sử dụng strictness để đảm bảo tất cả các đối tượng được mock đúng cách

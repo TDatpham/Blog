@@ -1,6 +1,6 @@
 package com.xjq.blog.web;
 
-import com.xjq.blog.po.Type;
+import com.xjq.blog.model.Type;
 import com.xjq.blog.service.BlogService;
 import com.xjq.blog.service.TypeService;
 import com.xjq.blog.vo.BlogQuery;

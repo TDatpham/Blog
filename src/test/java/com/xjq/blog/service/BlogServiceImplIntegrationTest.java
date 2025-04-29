@@ -2,8 +2,8 @@
 package com.xjq.blog.service;
 
 import com.xjq.blog.NotFoundException;
-import com.xjq.blog.dao.BlogRepository;
-import com.xjq.blog.po.Blog;
+import com.xjq.blog.repository.BlogRepository;
+import com.xjq.blog.model.Blog;
 import com.xjq.blog.vo.BlogQuery;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;

@@ -1,7 +1,7 @@
 package com.xjq.blog.web;
 
-import com.xjq.blog.po.Comment;
-import com.xjq.blog.po.User;
+import com.xjq.blog.model.Comment;
+import com.xjq.blog.model.User;
 import com.xjq.blog.service.BlogService;
 import com.xjq.blog.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;

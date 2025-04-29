@@ -1,8 +1,7 @@
 package com.xjq.blog.service;
 
-import com.xjq.blog.dao.UserRepository;
-import com.xjq.blog.po.User;
-import com.xjq.blog.service.UserServiceImpl;
+import com.xjq.blog.repository.UserRepository;
+import com.xjq.blog.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

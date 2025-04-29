@@ -1,6 +1,6 @@
-package com.xjq.blog.dao;
+package com.xjq.blog.repository;
 
-import com.xjq.blog.po.Type;
+import com.xjq.blog.model.Type;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

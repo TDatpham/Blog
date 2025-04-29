@@ -1,7 +1,7 @@
 package com.xjq.blog.service;
 
-import com.xjq.blog.dao.CommentRepository;
-import com.xjq.blog.po.Comment;
+import com.xjq.blog.repository.CommentRepository;
+import com.xjq.blog.model.Comment;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;

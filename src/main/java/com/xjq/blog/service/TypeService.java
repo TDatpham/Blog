@@ -1,6 +1,6 @@
 package com.xjq.blog.service;
 
-import com.xjq.blog.po.Type;
+import com.xjq.blog.model.Type;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

@@ -1,6 +1,6 @@
 package com.xjq.blog.web.admin;
 
-import com.xjq.blog.po.User;
+import com.xjq.blog.model.User;
 import com.xjq.blog.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

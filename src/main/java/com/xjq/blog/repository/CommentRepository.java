@@ -1,6 +1,6 @@
-package com.xjq.blog.dao;
+package com.xjq.blog.repository;
 
-import com.xjq.blog.po.Comment;
+import com.xjq.blog.model.Comment;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -1,8 +1,7 @@
 package com.xjq.blog.service;
 
-import com.xjq.blog.dao.TypeRepository;
-import com.xjq.blog.po.Type;
-import com.xjq.blog.service.TypeServiceImpl;
+import com.xjq.blog.repository.TypeRepository;
+import com.xjq.blog.model.Type;
 import com.xjq.blog.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,8 +1,7 @@
 package com.xjq.blog.service;
 
-import com.xjq.blog.dao.TagRepository;
-import com.xjq.blog.po.Tag;
-import com.xjq.blog.service.TagServiceImpl;
+import com.xjq.blog.repository.TagRepository;
+import com.xjq.blog.model.Tag;
 import com.xjq.blog.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

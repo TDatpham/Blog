@@ -1,8 +1,7 @@
 package com.xjq.blog.service;
 
-import com.xjq.blog.dao.UserRepository;
-import com.xjq.blog.po.User;
-import com.xjq.blog.util.MD5Utils;
+import com.xjq.blog.repository.UserRepository;
+import com.xjq.blog.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

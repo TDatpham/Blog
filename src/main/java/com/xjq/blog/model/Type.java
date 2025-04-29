@@ -1,4 +1,4 @@
-package com.xjq.blog.po;
+package com.xjq.blog.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;

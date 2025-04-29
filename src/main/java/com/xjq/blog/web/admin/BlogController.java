@@ -1,9 +1,8 @@
 package com.xjq.blog.web.admin;
 
-import com.xjq.blog.po.Blog;
-import com.xjq.blog.po.User;
+import com.xjq.blog.model.Blog;
+import com.xjq.blog.model.User;
 import com.xjq.blog.service.BlogService;
-import com.xjq.blog.service.EmailService;
 import com.xjq.blog.service.TagService;
 import com.xjq.blog.service.TypeService;
 import com.xjq.blog.vo.BlogQuery;
@@ -35,8 +34,6 @@ public class BlogController {
     @Autowired
     private TagService tagService;
 
-    @Autowired
-    private EmailService emailService; // 👈 Thêm dòng này
 
     @GetMapping("/blogs")
     public String blogs(@PageableDefault(size = 8, sort = {"updateTime"}, direction = Sort.Direction.DESC) Pageable pageable,
@@ -83,29 +80,7 @@ public class BlogController {
 
         boolean isNew = (blog.getId() == null);
 
-        if (isNew) {
-            b = blogService.saveBlog(blog);
-        } else {
-            b = blogService.updateBlog(blog.getId(), blog);
-        }
 
-        if (b == null) {
-            attributes.addFlashAttribute("message", "Operation Failed");
-        } else {
-            attributes.addFlashAttribute("message", "Operation Succeed");
-
-            if (isNew) {
-                b = blogService.saveBlog(blog);
-                // In ra log để kiểm tra
-                System.out.println("Gửi email thông báo bài viết mới.");
-                String subject = "📝 Có bài viết mới: " + b.getTitle();
-                String content = "Xem bài viết tại: http://localhost:8080/blog/" + b.getId();
-                emailService.sendNewPostNotification("phamthanhdat2003vl1@gmail.com", subject, content);
-            } else {
-                b = blogService.updateBlog(blog.getId(), blog);
-            }
-
-        }
         return REDIRECT_LIST;
     }
 

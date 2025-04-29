@@ -1,8 +1,7 @@
 package com.xjq.blog.service;
 
-import com.xjq.blog.dao.CommentRepository;
-import com.xjq.blog.po.Comment;
-import com.xjq.blog.service.CommentServiceImpl;
+import com.xjq.blog.repository.CommentRepository;
+import com.xjq.blog.model.Comment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

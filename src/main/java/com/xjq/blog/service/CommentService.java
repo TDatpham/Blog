@@ -1,6 +1,6 @@
 package com.xjq.blog.service;
 
-import com.xjq.blog.po.Comment;
+import com.xjq.blog.model.Comment;
 
 import java.util.List;
 

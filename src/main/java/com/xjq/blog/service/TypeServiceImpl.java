@@ -1,8 +1,8 @@
 package com.xjq.blog.service;
 
 import com.xjq.blog.NotFoundException;
-import com.xjq.blog.dao.TypeRepository;
-import com.xjq.blog.po.Type;
+import com.xjq.blog.repository.TypeRepository;
+import com.xjq.blog.model.Type;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

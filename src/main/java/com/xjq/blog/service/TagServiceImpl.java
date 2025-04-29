@@ -1,8 +1,8 @@
 package com.xjq.blog.service;
 
 import com.xjq.blog.NotFoundException;
-import com.xjq.blog.dao.TagRepository;
-import com.xjq.blog.po.Tag;
+import com.xjq.blog.repository.TagRepository;
+import com.xjq.blog.model.Tag;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
