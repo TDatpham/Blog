@@ -263,4 +263,8 @@ public class Blog {
                 ", description='" + description + '\'' +
                 '}';
     }
+
+    public void setUrl(String blogUrl) {
+        this.serurl = blogUrl;
+    }
 }

@@ -3,6 +3,12 @@
 <head th:replace="_fragments :: head(~{::title})">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Các thẻ meta cho Facebook (Open Graph) -->
+    <meta property="og:title" th:content="${blog.title}" />
+    <meta property="og:description" th:content="${blog.description}" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" th:content="@{'http://localhost:8080/blog/' + ${blog.id}}" />
+    <meta property="og:image" th:content="${blog.firstPicture}" />
     <title>blog</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
     <link rel="stylesheet" href="../static/css/typo.css">
@@ -432,7 +438,15 @@ h5,h6{font-size:1em;}
                     <div class="ui basic teal left pointing label" th:each="tag : ${blog.tags}" th:text="${tag.name}">方法论</div>
                 </div>
 
-                <!--赞赏-->
+
+                <!-- Nút chia sẻ -->
+                <a th:href="@{'https://www.facebook.com/sharer/sharer.php?u=http://localhost:8080/blog/' + ${blog.id}}"
+                   target="_blank"
+                   style="background-color: #1877F2; color: white; padding: 8px 12px; border-radius: 4px; text-decoration: none;">
+                    Chia sẻ lên Facebook
+                </a>
+
+
                 <div  th:if="${blog.appreciation}">
                     <div class="ui center aligned basic segment">
                         <button id="payButton" class="ui orange basic circular button">Pay</button>
