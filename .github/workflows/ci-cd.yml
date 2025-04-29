@@ -60,6 +60,9 @@ jobs:
           JAR_FILE=$(ls *.jar)
           echo "Jar file detected: $JAR_FILE"
 
+          echo "Ensure app folder exists on VPS..."
+          sshpass -p "$VPS_PASSWORD" ssh -o StrictHostKeyChecking=no $VPS_USER@$VPS_HOST "mkdir -p $APP_PATH"
+
           echo "Uploading JAR to VPS..."
           sshpass -p "$VPS_PASSWORD" scp -o StrictHostKeyChecking=no "$JAR_FILE" "$VPS_USER@$VPS_HOST:$APP_PATH/$SERVICE_NAME.jar"
 
