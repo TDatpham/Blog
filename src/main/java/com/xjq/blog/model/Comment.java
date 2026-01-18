@@ -1,6 +1,8 @@
 package com.xjq.blog.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -10,16 +12,18 @@ import java.util.List;
 public class Comment {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nickname;
     private String email;
+    @NotBlank
     private String content;
     private String avatar;
     @Temporal(TemporalType.TIMESTAMP)
     private Date createTime;
 
     @ManyToOne
+    @NotNull
     private Blog blog;
 
     @OneToMany(mappedBy = "parentComment")

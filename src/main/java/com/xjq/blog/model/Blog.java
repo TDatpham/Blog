@@ -10,22 +10,14 @@ import java.util.List;
 public class Blog {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String title;
-    
-    private String serurl; // Field name
-    
-    public void setSerurl(String serurl) {
-        this.serurl = serurl;
-    }
-    // Public getter method
-    public String getSerurl() {
-        return this.serurl;
-    }
-    
-    @Basic (fetch = FetchType.LAZY)
+
+    private String slug = "";
+
+    @Basic(fetch = FetchType.LAZY)
     @Lob
     private String content;
     private String firstPicture;
@@ -44,9 +36,10 @@ public class Blog {
     @ManyToOne
     private Type type;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST})
+    @ManyToMany(cascade = { CascadeType.PERSIST })
     private List<Tag> tags = new ArrayList<>();
 
+    private boolean approved;
 
     @ManyToOne
     private User user;
@@ -54,12 +47,32 @@ public class Blog {
     @OneToMany(mappedBy = "blog")
     private List<Comment> comments = new ArrayList<>();
 
+    private Integer likes = 0;
+
+    @ManyToMany
+    @JoinTable(name = "t_blog_likes", joinColumns = @JoinColumn(name = "blog_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private List<User> likedUsers = new ArrayList<>();
+
     @Transient
     private String tagIds;
 
     private String description;
 
-    public Blog() {
+    public void setApproved(boolean approved) {
+        this.approved = approved;
+    }
+
+    public boolean isApproved() {
+        return this.approved;
+    }
+
+    // Getter và Setter cho slug
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
     }
 
     public Long getId() {
@@ -182,7 +195,6 @@ public class Blog {
         this.tags = tags;
     }
 
-
     public User getUser() {
         return user;
     }
@@ -190,7 +202,6 @@ public class Blog {
     public void setUser(User user) {
         this.user = user;
     }
-
 
     public List<Comment> getComments() {
         return comments;
@@ -216,11 +227,27 @@ public class Blog {
         this.description = description;
     }
 
+    public Integer getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Integer likes) {
+        this.likes = likes;
+    }
+
+    public List<User> getLikedUsers() {
+        return likedUsers;
+    }
+
+    public void setLikedUsers(List<User> likedUsers) {
+        this.likedUsers = likedUsers;
+    }
+
     public void init() {
         this.tagIds = tagsToIds(this.getTags());
     }
 
-    //1,2,3
+    // 1,2,3
     private String tagsToIds(List<Tag> tags) {
         if (!tags.isEmpty()) {
             StringBuffer ids = new StringBuffer();
@@ -260,11 +287,9 @@ public class Blog {
                 ", user=" + user +
                 ", comments=" + comments +
                 ", tagIds='" + tagIds + '\'' +
+                ", slug='" + slug + '\'' +
                 ", description='" + description + '\'' +
                 '}';
     }
 
-    public void setUrl(String blogUrl) {
-        this.serurl = blogUrl;
-    }
 }

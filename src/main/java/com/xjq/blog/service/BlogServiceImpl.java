@@ -4,6 +4,9 @@ import com.xjq.blog.NotFoundException;
 import com.xjq.blog.repository.BlogRepository;
 import com.xjq.blog.model.Blog;
 import com.xjq.blog.model.Type;
+import com.xjq.blog.model.Tag;
+import com.xjq.blog.model.User;
+import com.xjq.blog.repository.UserRepository;
 import com.xjq.blog.util.MarkdownUtils;
 import com.xjq.blog.util.MyBeanUtils;
 import com.xjq.blog.vo.BlogQuery;
@@ -21,14 +24,20 @@ import javax.persistence.criteria.*;
 import java.util.*;
 
 @Service
-public class BlogServiceImpl implements BlogService{
+public class BlogServiceImpl implements BlogService {
 
     @Autowired
     private BlogRepository blogRepository;
 
     @Override
+    public Page<Blog> listBlogs(int page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "updateTime"));
+        return blogRepository.findAll(pageable);
+    }
+
+    @Override
     public Blog getBlog(Long id) {
-        return blogRepository.findOne(id);
+        return blogRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -38,7 +47,7 @@ public class BlogServiceImpl implements BlogService{
             public Predicate toPredicate(Root<Blog> root, CriteriaQuery<?> cq, CriteriaBuilder cb) {
                 List<Predicate> predicates = new ArrayList<>();
                 if (!"".equals(blog.getTitle()) && blog.getTitle() != null) {
-                    predicates.add(cb.like(root.<String>get("title"), "%"+blog.getTitle()+"%"));
+                    predicates.add(cb.like(root.<String>get("title"), "%" + blog.getTitle() + "%"));
                 }
                 if (blog.getTypeId() != null) {
                     predicates.add(cb.equal(root.<Type>get("type").get("id"), blog.getTypeId()));
@@ -46,14 +55,20 @@ public class BlogServiceImpl implements BlogService{
                 if (blog.isRecommend()) {
                     predicates.add(cb.equal(root.<Boolean>get("recommend"), blog.isRecommend()));
                 }
-                cq.where(predicates.toArray(new Predicate[predicates.size()]));
-                return null;
+                if (blog.getUserId() != null) {
+                    predicates.add(cb.equal(root.get("user").get("id"), blog.getUserId()));
+                }
+                if (blog.getPublished() != null) {
+                    predicates.add(cb.equal(root.get("published"), blog.getPublished()));
+                }
+                if (blog.getApproved() != null) {
+                    predicates.add(cb.equal(root.get("approved"), blog.getApproved()));
+                }
+                return cb.and(predicates.toArray(new Predicate[0]));
             }
-        },pageable);
+        }, pageable);
     }
 
-    @Transactional
-    @Override
     public Blog saveBlog(Blog blog) {
         if (blog.getId() == null) {
             blog.setCreateTime(new Date());
@@ -62,7 +77,16 @@ public class BlogServiceImpl implements BlogService{
         } else {
             blog.setUpdateTime(new Date());
         }
-        return blogRepository.save(blog);
+        try {
+            // Log ngay trước khi lưu blog
+            System.out.println("Saving blog: " + blog.toString());
+            return blogRepository.save(blog);
+        } catch (Exception e) {
+            // Log exception
+            System.err.println("Error saving blog: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     @Override
@@ -75,30 +99,34 @@ public class BlogServiceImpl implements BlogService{
         return blogRepository.findAll(new Specification<Blog>() {
             @Override
             public Predicate toPredicate(Root<Blog> root, CriteriaQuery<?> cq, CriteriaBuilder cb) {
-                Join join = root.join("tags");
-                return cb.equal(join.get("id"),tagId);
+                Join<Blog, Tag> join = root.join("tags");
+                List<Predicate> predicates = new ArrayList<>();
+                predicates.add(cb.equal(join.get("id"), tagId));
+                predicates.add(cb.equal(root.get("published"), true));
+                predicates.add(cb.equal(root.get("approved"), true));
+                return cb.and(predicates.toArray(new Predicate[0]));
             }
-        },pageable);
+        }, pageable);
     }
 
     @Override
     public Page<Blog> listBlog(String query, Pageable pageable) {
-        return blogRepository.findByQuery(query,pageable);
+        return blogRepository.findByQuery(query, pageable);
     }
-    
-    //Chuyển từ Markdown sang HTML, cập nhật lượt xem
+
+    // Chuyển từ Markdown sang HTML, cập nhật lượt xem
     @Transactional
     @Override
     public Blog getAndConvert(Long id) {
-        Blog blog = blogRepository.findOne(id);
-        if (blog == null) {
-            throw new NotFoundException("This article is invalid");
+        Blog blog = blogRepository.findById(id).orElse(null);
+        if (blog == null || !blog.isPublished() || !blog.isApproved()) {
+            throw new NotFoundException("This article is invalid or not available");
         }
         Blog b = new Blog();
-        BeanUtils.copyProperties(blog,b);
+        BeanUtils.copyProperties(blog, b);
         String content = b.getContent();
         b.setContent(MarkdownUtils.markdownToHtmlExtensions(content));
-        //view accumulate
+        // view accumulate
         blogRepository.updateViews(id);
 
         return b;
@@ -106,7 +134,7 @@ public class BlogServiceImpl implements BlogService{
 
     @Override
     public List<Blog> listRecommendBlogTop(Integer size) {
-        Pageable pageable = PageRequest.of(0, size, Sort.by(Sort.Direction.DESC,"updateTime"));
+        Pageable pageable = PageRequest.of(0, size, Sort.by(Sort.Direction.DESC, "updateTime"));
         return blogRepository.findTop(pageable);
     }
 
@@ -128,11 +156,11 @@ public class BlogServiceImpl implements BlogService{
     @Transactional
     @Override
     public Blog updateBlog(Long id, Blog blog) {
-        Blog b = blogRepository.findOne(id);
+        Blog b = blogRepository.findById(id).orElse(null);
         if (b == null) {
             throw new NotFoundException("This blog is not exist");
         }
-        BeanUtils.copyProperties(blog,b, MyBeanUtils.getNullPropertyNames(blog));
+        BeanUtils.copyProperties(blog, b, MyBeanUtils.getNullPropertyNames(blog));
         b.setUpdateTime(new Date());
         return blogRepository.save(b);
     }
@@ -141,5 +169,38 @@ public class BlogServiceImpl implements BlogService{
     @Override
     public void deleteBlog(Long id) {
         blogRepository.deleteById(id);
+    }
+
+    @Override
+    public Page<Blog> listPublicBlogs(Pageable pageable) {
+        return blogRepository.findByPublishedTrueAndApprovedTrue(pageable);
+    }
+
+    @Transactional
+    @Override
+    public void approveBlog(Long id, boolean approved) {
+        blogRepository.updateApproved(id, approved);
+    }
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Transactional
+    @Override
+    public void likeBlog(Long blogId, Long userId) {
+        Blog blog = blogRepository.findById(blogId).orElse(null);
+        User user = userRepository.findById(userId).orElse(null);
+
+        if (blog != null && user != null) {
+            List<User> likedUsers = blog.getLikedUsers();
+            if (likedUsers.contains(user)) {
+                likedUsers.remove(user);
+                blog.setLikes(Math.max(0, blog.getLikes() - 1));
+            } else {
+                likedUsers.add(user);
+                blog.setLikes(blog.getLikes() + 1);
+            }
+            blogRepository.save(blog);
+        }
     }
 }

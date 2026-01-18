@@ -1,3 +1,4 @@
+
 package com.xjq.blog.service;
 
 import com.xjq.blog.NotFoundException;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.mockito.ArgumentMatchers;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -34,7 +36,8 @@ import static org.mockito.Mockito.*;
 @ActiveProfiles("test")
 @Disabled("Temporarily disabled for debugging")
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.STRICT_STUBS)  // Sử dụng strictness để đảm bảo tất cả các đối tượng được mock đúng cách
+@MockitoSettings(strictness = Strictness.STRICT_STUBS) // Sử dụng strictness để đảm bảo tất cả các đối tượng được mock
+                                                       // đúng cách
 class BlogServiceImplTest {
 
     @Mock
@@ -62,12 +65,12 @@ class BlogServiceImplTest {
         Pageable pageable = PageRequest.of(0, 5);
         Page<Blog> page = new PageImpl<>(Collections.emptyList());
 
-        when(blogRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(page);
+        when(blogRepository.findAll(ArgumentMatchers.<Specification<Blog>>any(), eq(pageable))).thenReturn(page);
 
         Page<Blog> result = blogService.listBlog(pageable, blogQuery);
 
         assertNotNull(result);
-        verify(blogRepository).findAll(any(Specification.class), eq(pageable));
+        verify(blogRepository).findAll(ArgumentMatchers.<Specification<Blog>>any(), eq(pageable));
     }
 
     @Test
@@ -112,12 +115,12 @@ class BlogServiceImplTest {
     void testListBlog_ByTagId() {
         Pageable pageable = PageRequest.of(0, 5);
         Page<Blog> page = new PageImpl<>(Collections.emptyList());
-        when(blogRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(page);
+        when(blogRepository.findAll(ArgumentMatchers.<Specification<Blog>>any(), eq(pageable))).thenReturn(page);
 
         Page<Blog> result = blogService.listBlog(1L, pageable);
 
         assertNotNull(result);
-        verify(blogRepository).findAll(any(Specification.class), eq(pageable));
+        verify(blogRepository).findAll(ArgumentMatchers.<Specification<Blog>>any(), eq(pageable));
     }
 
     @Test

@@ -24,15 +24,21 @@ public interface BlogService {
 
     List<Blog> listRecommendBlogTop(Integer size);
 
-    Map<String,List<Blog>> archiveBlog();
+    Map<String, List<Blog>> archiveBlog();
 
     Long countBlog();
 
     Blog saveBlog(Blog blog);
 
-    Blog updateBlog(Long id,Blog blog);
+    Blog updateBlog(Long id, Blog blog);
 
     void deleteBlog(Long id);
 
+    void approveBlog(Long id, boolean approved);
 
+    void likeBlog(Long blogId, Long userId);
+
+    Page<Blog> listPublicBlogs(Pageable pageable);
+
+    Page<Blog> listBlogs(int i, Integer size);
 }

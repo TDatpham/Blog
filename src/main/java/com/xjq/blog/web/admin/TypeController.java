@@ -24,9 +24,9 @@ public class TypeController {
     private TypeService typeService;
 
     @GetMapping("/types")
-    public String types(@PageableDefault(size = 3,sort = {"id"},direction = Sort.Direction.DESC)
-                                Pageable pageable, Model model) {
-        model.addAttribute("page",typeService.listType(pageable));
+    public String types(@PageableDefault(size = 3, sort = { "id" }, direction = Sort.Direction.DESC) Pageable pageable,
+            Model model) {
+        model.addAttribute("page", typeService.listType(pageable));
         return "admin/types";
     }
 
@@ -42,18 +42,17 @@ public class TypeController {
         return "admin/types-input";
     }
 
-
     @PostMapping("/types")
     public String post(@Valid Type type, BindingResult result, RedirectAttributes attributes) {
         Type type1 = typeService.getTypeByName(type.getName());
         if (type1 != null) {
-            result.rejectValue("name","nameError","Can't add duplicate Category");
+            result.rejectValue("name", "nameError", "Can't add duplicate Category");
         }
         if (result.hasErrors()) {
             return "admin/types-input";
         }
         Type t = typeService.saveType(type);
-        if (t == null ) {
+        if (t == null) {
             attributes.addFlashAttribute("message", "Failed to add");
         } else {
             attributes.addFlashAttribute("message", "Add Successfully");
@@ -61,18 +60,18 @@ public class TypeController {
         return "redirect:/admin/types";
     }
 
-
     @PostMapping("/types/{id}")
-    public String editPost(@Valid Type type, BindingResult result,@PathVariable Long id, RedirectAttributes attributes) {
+    public String editPost(@Valid Type type, BindingResult result, @PathVariable Long id,
+            RedirectAttributes attributes) {
         Type type1 = typeService.getTypeByName(type.getName());
         if (type1 != null) {
-            result.rejectValue("name","nameError","Can't add duplicate Category");
+            result.rejectValue("name", "nameError", "Can't add duplicate Category");
         }
         if (result.hasErrors()) {
             return "admin/types-input";
         }
-        Type t = typeService.updateType(id,type);
-        if (t == null ) {
+        Type t = typeService.updateType(id, type);
+        if (t == null) {
             attributes.addFlashAttribute("message", "Failed to update");
         } else {
             attributes.addFlashAttribute("message", "Update successfully");
@@ -81,7 +80,7 @@ public class TypeController {
     }
 
     @GetMapping("/types/{id}/delete")
-    public String delete(@PathVariable Long id,RedirectAttributes attributes) {
+    public String delete(@PathVariable Long id, RedirectAttributes attributes) {
         typeService.deleteType(id);
         attributes.addFlashAttribute("message", "Delete successfully");
         return "redirect:/admin/types";

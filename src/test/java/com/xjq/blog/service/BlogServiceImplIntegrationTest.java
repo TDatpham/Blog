@@ -1,4 +1,5 @@
 // src/test/java/com/xjq/blog/service/BlogServiceImplIntegrationTest.java
+
 package com.xjq.blog.service;
 
 import com.xjq.blog.NotFoundException;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.mockito.ArgumentMatchers;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -61,12 +63,12 @@ class BlogServiceImplIntegrationTest {
 
         Pageable pageable = PageRequest.of(0, 5);
         Page<Blog> page = new PageImpl<>(Collections.emptyList());
-        when(blogRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(page);
+        when(blogRepository.findAll(ArgumentMatchers.<Specification<Blog>>any(), eq(pageable))).thenReturn(page);
 
         Page<Blog> result = blogService.listBlog(pageable, blogQuery);
 
         assertNotNull(result);
-        verify(blogRepository).findAll(any(Specification.class), eq(pageable));
+        verify(blogRepository).findAll(ArgumentMatchers.<Specification<Blog>>any(), eq(pageable));
     }
 
     @Test
@@ -111,12 +113,12 @@ class BlogServiceImplIntegrationTest {
     void testListBlog_ByTagId() {
         Pageable pageable = PageRequest.of(0, 5);
         Page<Blog> page = new PageImpl<>(Collections.emptyList());
-        when(blogRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(page);
+        when(blogRepository.findAll(ArgumentMatchers.<Specification<Blog>>any(), eq(pageable))).thenReturn(page);
 
         Page<Blog> result = blogService.listBlog(1L, pageable);
 
         assertNotNull(result);
-        verify(blogRepository).findAll(any(Specification.class), eq(pageable));
+        verify(blogRepository).findAll(ArgumentMatchers.<Specification<Blog>>any(), eq(pageable));
     }
 
     @Test
@@ -138,7 +140,8 @@ class BlogServiceImplIntegrationTest {
         when(blogRepository.findById(1L)).thenReturn(Optional.of(blog));
 
         // Nếu `updateViews` không phải là void, bạn cần chỉnh lại cách mock
-        when(blogRepository.updateViews(1L)).thenReturn(null); // giả sử phương thức trả về void hoặc xử lý theo cách khác
+        when(blogRepository.updateViews(1L)).thenReturn(null); // giả sử phương thức trả về void hoặc xử lý theo cách
+                                                               // khác
 
         Blog result = blogService.getAndConvert(1L);
 

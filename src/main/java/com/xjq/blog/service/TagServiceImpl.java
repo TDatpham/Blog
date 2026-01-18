@@ -30,7 +30,7 @@ public class TagServiceImpl implements TagService {
     @Transactional
     @Override
     public Tag getTag(Long id) {
-        return tagRepository.findOne(id);
+        return tagRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -50,40 +50,37 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<Tag> listTag(String ids) { //1,2,3
+    public List<Tag> listTag(String ids) { // 1,2,3
         return tagRepository.findAllById(convertToList(ids));
     }
 
     @Override
     public List<Tag> listTagTop(Integer size) {
-        Pageable pageable = PageRequest.of(0, size, Sort.by(Sort.Direction.DESC,"blogs.size"));
+        Pageable pageable = PageRequest.of(0, size, Sort.by(Sort.Direction.DESC, "blogs.size"));
         return tagRepository.findTop(pageable);
     }
 
     private List<Long> convertToList(String ids) {
         List<Long> list = new ArrayList<>();
-        if (!"".equals(ids) && ids != null) {
+        if (ids != null && !"".equals(ids)) {
             String[] idarray = ids.split(",");
-            for (int i=0; i < idarray.length;i++) {
+            for (int i = 0; i < idarray.length; i++) {
                 list.add(Long.valueOf(idarray[i]));
             }
         }
         return list;
     }
 
-
     @Transactional
     @Override
     public Tag updateTag(Long id, Tag tag) {
-        Tag t = tagRepository.findOne(id);
+        Tag t = tagRepository.findById(id).orElse(null);
         if (t == null) {
             throw new NotFoundException("不存在该标签");
         }
-        BeanUtils.copyProperties(tag,t);
+        BeanUtils.copyProperties(tag, t);
         return tagRepository.save(t);
     }
-
-
 
     @Transactional
     @Override

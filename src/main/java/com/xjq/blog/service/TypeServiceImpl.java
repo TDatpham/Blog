@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-public class TypeServiceImpl implements TypeService{
+public class TypeServiceImpl implements TypeService {
 
     @Autowired
     private TypeRepository typeRepository;
@@ -29,7 +29,7 @@ public class TypeServiceImpl implements TypeService{
     @Transactional
     @Override
     public Type getType(Long id) {
-        return typeRepository.findOne(id);
+        return typeRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -50,21 +50,21 @@ public class TypeServiceImpl implements TypeService{
 
     @Override
     public List<Type> listTypeTop(Integer size) {
-        //PageRequest constructors have been deprecated
-//        Sort sort = new Sort(Sort.Direction.DESC,"blogs.size");
-//        Pageable pageable = new PageRequest(0,size,sort);
-        Pageable pageable = PageRequest.of(0, size, Sort.by(Sort.Direction.DESC,"blogs.size"));
+        // PageRequest constructors have been deprecated
+        // Sort sort = new Sort(Sort.Direction.DESC,"blogs.size");
+        // Pageable pageable = new PageRequest(0,size,sort);
+        Pageable pageable = PageRequest.of(0, size, Sort.by(Sort.Direction.DESC, "blogs.size"));
         return typeRepository.findTop(pageable);
     }
 
     @Transactional
     @Override
     public Type updateType(Long id, Type type) {
-        Type t = typeRepository.findOne(id);
+        Type t = typeRepository.findById(id).orElse(null);
         if (t == null) {
             throw new NotFoundException("This Category is invalid");
         }
-        BeanUtils.copyProperties(type,t);
+        BeanUtils.copyProperties(type, t);
         return typeRepository.save(t);
     }
 

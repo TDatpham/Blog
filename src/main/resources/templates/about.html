@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
 <head th:replace="_fragments :: head(~{::title})">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,64 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
     <link rel="stylesheet" href="../static/css/me.css">
 </head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f7f7f7;
+        padding: 40px;
+    }
+
+    .contact-form {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(10px);
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        max-width: 500px;
+        margin: 20px auto;
+    }
+
+    .contact-form h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+        width: 100%;
+        padding: 12px 15px;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        box-sizing: border-box;
+        transition: border-color 0.3s;
+    }
+
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+        border-color: #007BFF;
+        outline: none;
+    }
+
+    .contact-form button {
+        width: 100%;
+        padding: 12px;
+        background: #007BFF;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background 0.3s;
+    }
+
+    .contact-form button:hover {
+        background: #0056b3;
+    }
+</style>
+
 <body>
     <!--导航-->
     <nav th:replace="_fragments :: menu(5)" class="ui inverted attached segment m-padded-tb-mini m-shadow-small">
@@ -20,7 +79,7 @@
                 <a href="#" class="active m-item item m-mobile-hide"><i class="mini info icon"></i>About Me</a>
                 <div class="m-item right item m-mobile-hide">
                     <div class="ui icon inverted transparent input">
-                        <input type="text"placeholder="Search...">
+                        <input type="text" placeholder="Search...">
                         <i class="search link icon"></i>
                     </div>
                 </div>
@@ -32,42 +91,56 @@
     </nav>
 
     <!--中间内容-->
-    <div  class="m-container m-padded-tb-big">
+    <div class="m-container m-padded-tb-big">
         <div class="ui container">
 
             <div class="ui stackable grid">
                 <div class="eleven wide column">
-                    <div class="ui segment">
-                        <img src="https://scontent.fsgn5-9.fna.fbcdn.net/v/t39.30808-6/489996689_1737969080436835_5545207021967469183_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeE-ps0OsZJwCXmFQ6n-K0t4IWoxFGlVRUghajEUaVVFSBn5_Ap1abhFbDryB2hchyJIppP99XQ1dXfXvIWSmwi0&_nc_ohc=A-aRf-X0yAIQ7kNvwHDoQ04&_nc_oc=Adn7Nj93q1dPDSfnsOADZTJ2_icSwcCh_9U-4eNR6NRcAU0hdefVcj-Cw7gU91SiZxI&_nc_zt=23&_nc_ht=scontent.fsgn5-9.fna&_nc_gid=oLidvB2QSS4Sb7aYjHhw6A&oh=00_AfG6QIIgYYoungh8wluqFjtwCcwecsz9F-HNf7cjYz3izQ&oe=680B844E" alt="" class="ui rounded image">
+                    <div class="ui segment m-glass">
+                        <img src="https://scontent.fsgn5-8.fna.fbcdn.net/v/t39.30808-6/487402899_1731243924442684_8421096046561281227_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=a5f93a&_nc_ohc=9oVpBpgmmvIQ7kNvwHDCV54&_nc_oc=AdksPGfz28oPlTnrkN981ovlcp4pjS_aHxr9qh2VirrfTy_TgVlCMoBAP7BtznGp3sw&_nc_zt=23&_nc_ht=scontent.fsgn5-8.fna&_nc_gid=8hTh06RdaN6bihlgcjX5Fw&oh=00_AfENgUofNC2I0lBzjymSgZlNU29RyGP6g-3G-4atJdUTDA&oe=6817A735"
+                            alt="" class="ui rounded image">
                     </div>
                 </div>
                 <div class="five wide column">
-                    <div class="ui top attached segment">
+                    <div class="ui top attached segment m-glass">
                         <div class="ui header">About Me</div>
                     </div>
-                    <div class="ui attached segment">
-                        <p class="m-text">Thanh Dat Pham A lifelong learner who vows to learn an infinite loop. I am a student from HCMUE major in Computer Science.</p>
+                    <div class="ui attached segment m-glass">
+                        <p class="m-text">Thanh Dat Pham A lifelong learner who vows to learn an infinite loop. I am a
+                            student from HCMUE major in Computer Science.</p>
                     </div>
-                    <div class="ui attached segment">
+                    <div class="ui attached segment m-glass">
                         <div class="ui orange basic left pointing label m-margin-tb-tiny">Tech</div>
                         <div class="ui orange basic left pointing label m-margin-tb-tiny">Photograph</div>
                         <div class="ui orange basic left pointing label m-margin-tb-tiny">Programming</div>
                         <div class="ui orange basic left pointing label m-margin-tb-tiny">Soccer</div>
                     </div>
-                    <div class="ui attached segment">
+                    <div class="ui attached segment m-glass">
                         <div class="ui teal basic left pointing label m-margin-tb-tiny">Java</div>
                         <div class="ui teal basic left pointing label m-margin-tb-tiny">Python</div>
                         <div class="ui teal basic left pointing label m-margin-tb-tiny">JavaScript</div>
                         <div class="ui teal basic left pointing label m-margin-tb-tiny">MYSQL</div>
                         <div class="ui teal basic left pointing label m-margin-tb-tiny">...</div>
                     </div>
-                    <div class="ui bottom attached segment">
-                        <a href="https://github.com/jiaqi-xiao" target="_blank" class="ui circular icon button"><i class="github icon"></i></a>
-                        <a href="https://www.linkedin.com/in/jq-xiao" target="_blank" class="ui circular icon button"><i class="linkedin icon"></i></a>
+                    <div class="ui bottom attached segment m-glass">
+                        <a href="https://github.com/TDatpham" target="_blank" class="ui circular icon button"><i
+                                class="github icon"></i></a>
+                        <a href="https://www.linkedin.com/in/th%C3%A0nh-%C4%91%E1%BA%A1t-ph%E1%BA%A1m-001842280?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3BxrCNOdQYRSy1q%2F5l574LYg%3D%3D"
+                            target="_blank" class="ui circular icon button"><i class="linkedin icon"></i></a>
                         <!--<a href="#" class="ui wechat circular icon button"><i class="weixin icon"></i></a>-->
                         <!--<a href="#" class="ui qq circular icon button" data-content="111111111" data-position="bottom center"><i class="qq icon"></i></a>-->
                     </div>
+                    <form class="contact-form" action="#" th:action="@{/contact/send}" method="post">
+                        <h2>Send email</h2>
 
+                        <input type="text" name="name" placeholder="Your name" required>
+
+                        <input type="email" name="email" placeholder="Your email" required>
+
+                        <textarea name="message" rows="6" placeholder="..." required></textarea>
+
+                        <button type="submit">Send</button>
+                    </form>
                     <div class="ui wechat-qr flowing popup transition hidden">
                         <img src="../static/images/wechat.png" alt="" class="ui rounded image" style="width: 110px">
                     </div>
@@ -102,7 +175,8 @@
                     <h4 class="ui inverted m-text-thin header m-text-space">Contact Me</h4>
                     <div class="ui inverted link list">
                         <a href="#" class="item">Email: phamthanhdat2003vl1@gmail.com</a>
-                        <a href="https://www.linkedin.com/in/jq-xiao/" class="item">Linkedin</a>
+                        <a href="https://www.linkedin.com/in/th%C3%A0nh-%C4%91%E1%BA%A1t-ph%E1%BA%A1m-001842280?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3BxrCNOdQYRSy1q%2F5l574LYg%3D%3D"
+                            class="item">Linkedin</a>
                     </div>
                 </div>
                 <div class="seven wide column">
@@ -111,13 +185,13 @@
                 </div>
             </div>
             <div class="ui inverted section divider"></div>
-            <p class="m-text-thin m-text-space m-opacity-tiny">Copyright © 2018-2019 Designed by Thanh Dat Pham </p>
+            <p class="m-text-thin m-text-space m-opacity-tiny">Copyright © 2024-2025 Designed by Thanh Dat Pham </p>
         </div>
 
     </footer>
     <!--/*/<th:block th:replace="_fragments :: script">/*/-->
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
     <!--/*/</th:block>/*/-->
 
     <script>
@@ -126,10 +200,11 @@
         });
 
         $('.wechat').popup({
-            popup : $('.wechat-qr'),
+            popup: $('.wechat-qr'),
             position: 'bottom center'
         });
         $('.qq').popup();
     </script>
 </body>
+
 </html>

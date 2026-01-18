@@ -20,77 +20,76 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<Comment> listCommentByBlogId(Long blogId) {
-        List<Comment> comments = commentRepository.findByBlogIdAndParentCommentNull(blogId, Sort.by("createTime"));
+        // Fetch comments with no parent and sort by creation time
+        List<Comment> comments = commentRepository.findByBlogIdAndParentCommentNull(blogId,
+                Sort.by(Sort.Order.asc("createTime")));
         return eachComment(comments);
     }
 
     @Transactional
     @Override
     public Comment saveComment(Comment comment) {
-        Long parentCommentId = comment.getParentComment().getId();
-        if (parentCommentId != -1) {
-            comment.setParentComment(commentRepository.findOne(parentCommentId));
+        if (comment.getParentComment() != null && comment.getParentComment().getId() != -1) {
+            // Find the parent comment and set it
+            comment.setParentComment(commentRepository.findById(comment.getParentComment().getId()).orElse(null));
         } else {
+            // If no parent comment, set to null
             comment.setParentComment(null);
         }
+        // Set the current timestamp for creation time
         comment.setCreateTime(new Date());
         return commentRepository.save(comment);
     }
 
-
     /**
-     * 循环每个顶级的评论节点
-     * @param comments
-     * @return
+     * Processes the top-level comments and their children recursively.
+     * 
+     * @param comments List of top-level comments to process.
+     * @return List of comments with their nested replies.
      */
     private List<Comment> eachComment(List<Comment> comments) {
         List<Comment> commentsView = new ArrayList<>();
         for (Comment comment : comments) {
             Comment c = new Comment();
-            BeanUtils.copyProperties(comment,c);
+            BeanUtils.copyProperties(comment, c);
             commentsView.add(c);
         }
-        //合并评论的各层子代到第一级子代集合中
+        // Combine replies of all levels into the top-level comments
         combineChildren(commentsView);
         return commentsView;
     }
 
     /**
-     *
-     * @param comments root根节点，blog不为空的对象集合
-     * @return
+     * Combines the children comments into the top-level comments.
+     * 
+     * @param comments The list of comments to be processed.
      */
     private void combineChildren(List<Comment> comments) {
-
         for (Comment comment : comments) {
-            List<Comment> replys1 = comment.getReplyComments();
-            for(Comment reply1 : replys1) {
-                //循环迭代，找出子代，存放在tempReplys中
-                recursively(reply1);
+            List<Comment> replies = comment.getReplyComments();
+            List<Comment> tempReplys = new ArrayList<>();
+            for (Comment reply : replies) {
+                // Recursively find all nested replies and add them to tempReplys
+                recursively(reply, tempReplys);
             }
-            //修改顶级节点的reply集合为迭代处理后的集合
+            // Set the flattened replies to the top-level comment
             comment.setReplyComments(tempReplys);
-            //清除临时存放区
-            tempReplys = new ArrayList<>();
         }
     }
 
-    //存放迭代找出的所有子代的集合
-    private List<Comment> tempReplys = new ArrayList<>();
     /**
-     * 递归迭代，剥洋葱
-     * @param comment 被迭代的对象
-     * @return
+     * Recursively processes replies for each comment, adding them to the provided
+     * list.
+     * 
+     * @param comment    The comment to process.
+     * @param tempReplys The list to collect all flattened replies.
      */
-    private void recursively(Comment comment) {
-        tempReplys.add(comment);//顶节点添加到临时存放集合
-        if (comment.getReplyComments().size()>0) {
-            List<Comment> replys = comment.getReplyComments();
-            for (Comment reply : replys) {
-                tempReplys.add(reply);
-                if (reply.getReplyComments().size()>0) {
-                    recursively(reply);
-                }
+    private void recursively(Comment comment, List<Comment> tempReplys) {
+        tempReplys.add(comment); // Add the current comment
+        if (comment.getReplyComments() != null && !comment.getReplyComments().isEmpty()) {
+            List<Comment> replies = comment.getReplyComments();
+            for (Comment reply : replies) {
+                recursively(reply, tempReplys);
             }
         }
     }

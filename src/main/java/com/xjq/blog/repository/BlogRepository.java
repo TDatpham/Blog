@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.List;
 
 public interface BlogRepository extends JpaRepository<Blog, Long>, JpaSpecificationExecutor<Blog> {
@@ -17,20 +16,30 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, JpaSpecificat
         return (Blog) findById(id).orElse(null);
     }
 
-    @Query("select b from Blog b where b.recommend = true")
+    @Query("select b from Blog b where b.recommend = true and b.published = true and b.approved = true")
     List<Blog> findTop(Pageable pageable);
 
-    @Query("select b from Blog b where b.title like ?1 or b.content like ?1")
-    Page<Blog> findByQuery(String query,Pageable pageable);
+    @Query("select b from Blog b where (b.title like ?1 or b.content like ?1) and b.published = true and b.approved = true")
+    Page<Blog> findByQuery(String query, Pageable pageable);
 
     @Transactional
     @Modifying
     @Query("update Blog b set b.views = b.views+1 where b.id = ?1")
     int updateViews(Long id);
 
-    @Query("select function('date_format',b.updateTime,'%Y') as year from Blog b group by function('date_format',b.updateTime,'%Y') order by year desc ")
+    @Query("select function('date_format',b.updateTime,'%Y') as year from Blog b where b.published = true and b.approved = true group by function('date_format',b.updateTime,'%Y') order by year desc ")
     List<String> findGroupYear();
 
-    @Query("select b from Blog b where function('date_format',b.updateTime,'%Y') = ?1")
+    @Query("select b from Blog b where function('date_format',b.updateTime,'%Y') = ?1 and b.published = true and b.approved = true")
     List<Blog> findByYear(String year);
+
+    @Query("select b from Blog b where b.published = true and b.approved = true")
+    Page<Blog> findByPublishedTrueAndApprovedTrue(Pageable pageable);
+
+    @Transactional
+    @Modifying
+    @Query("update Blog b set b.approved = ?2 where b.id = ?1")
+    int updateApproved(Long id, boolean approved);
+
+    List<Blog> findByApprovedFalse();
 }
